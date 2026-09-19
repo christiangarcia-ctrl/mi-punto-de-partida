@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+<meta name="referrer" content="no-referrer"/>
+<script>window.GARBA_ACCESS_CONFIG={"product":"retiro","role":"point","api":"https://mi-tracker-seguros.vercel.app/api/pdp-session"};</script>
+<script src="pdp-access.js"></script>
+
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>Punto de Partida · Christian GarBa</title>
@@ -105,7 +109,7 @@ body{background:radial-gradient(ellipse 70% 50% at 15% -10%,rgba(10,22,40,.07),t
     </div>
     <div class="ingreso-inline vis" id="ingresoWrap"><label class="fl">¿Cuánto ganas aproximadamente al mes?</label><select class="fi" id="ingresoR"><option value="">— Selecciona un rango —</option><option value="12000">Hasta $15,000 / mes</option><option value="20000">$15,001 – $25,000 / mes</option><option value="32000">$25,001 – $40,000 / mes</option><option value="50000">$40,001 – $60,000 / mes</option><option value="72000">$60,001 – $85,000 / mes</option><option value="100000">Más de $85,000 / mes</option></select><div class="hint">No necesitas una cantidad exacta. Solo usamos el rango para estimar si podría existir beneficio fiscal.</div></div>
     <div class="mini-note"><strong>Último dato:</strong> así Christian te manda tu sesión ya precargada y puede platicar contigo directamente.</div>
-    <div class="grid2"><div><label class="fl">¿Cómo te llamas?</label><input class="fi" type="text" id="nombre" placeholder="Ej. Roberto Martínez" autocomplete="off"/><div class="hint">Lo usamos para mostrarte un resultado personalizado.</div></div><div><label class="fl">Tu WhatsApp</label><input class="fi" type="tel" id="wanum" placeholder="Ej. 6622001122" maxlength="10" inputmode="numeric" autocomplete="off"/><div class="hint">Así Christian te contacta directamente cuando quieras platicar.</div></div></div>
+    <div class="grid2"><div><label class="fl">¿Cómo te llamas?</label><input class="fi" type="text" id="nombre" placeholder="Ej. Roberto Martínez" autocomplete="off"/><div class="hint">Lo usamos para mostrarte un resultado personalizado.</div></div><div><label class="fl">Tu WhatsApp</label><input class="fi" type="tel" id="wanum" placeholder="Ej. 6622001122" maxlength="16" inputmode="numeric" autocomplete="off"/><div class="hint">Así Christian te contacta directamente cuando quieras platicar.</div></div></div>
     <div class="err" id="e2">Completa los campos requeridos para ver tu diagnóstico.</div>
     <div style="display:flex;gap:10px;margin-top:18px;"><button class="btn-outline" onclick="goGoal()">← Regresar</button><button class="btn-primary" onclick="calcular()">Ver qué tan cerca estoy →</button></div>
     <div class="disclaimer" style="text-align:left;margin-top:12px">Tu información se usa únicamente para este diagnóstico. No compartimos tus datos.</div>
@@ -165,7 +169,7 @@ function goGoalFromDolor(){if(!situValid(3)){$('situErr3').classList.add('vis');
 function goDolor(){$('vGoal').classList.remove('active');$('vDolor').classList.add('active');window.scrollTo({top:0,behavior:'smooth'})}
 function goGoal(){$('vReality').classList.remove('active');$('vGoal').classList.add('active');window.scrollTo({top:0,behavior:'smooth'})}
 function goReality(){const des=parseMoney($('deseo').value),edad=+$('edad').value,er=+$('edadRet').value;const ok=des>=2000&&edad>=18&&edad<=64&&[60,65].includes(er)&&er>edad;if(!ok){const e=$('e1');e.textContent='Completa tu meta mensual, tu edad actual y elige 60 o 65 como edad objetivo.';e.classList.add('vis');return}$('e1').classList.remove('vis');$('vGoal').classList.remove('active');$('vReality').classList.add('active');window.scrollTo({top:0,behavior:'smooth'})}
-function calcular(){const ahorro=parseMoney($('ahorro').value),reg=getReg(),ing=$('ingresoR').value,nom=$('nombre').value.trim(),wa=$('wanum').value.trim(),plazo=+$('plazo').value;const err=$('e2');if(!ahorro||ahorro<2000){err.textContent='Elige una aportación mensual. La mínima para calcular esta estrategia es de $2,000.';err.classList.add('vis');return}if(!plazo||![15,20,25].includes(plazo)){err.textContent='Elige durante cuánto tiempo te gustaría aportar: 15, 20 o 25 años.';err.classList.add('vis');return}const ok=nom&&/^\d{10}$/.test(wa)&&(reg==='INF'||ing);if(!ok){err.textContent='Completa tu régimen, ingreso aproximado, nombre y WhatsApp para ver tu diagnóstico.';err.classList.add('vis');return}err.classList.remove('vis');$('calcOv').classList.add('vis');setTimeout(()=>{const des=parseMoney($('deseo').value),edad=+$('edad').value,edadR=+$('edadRet').value,ingreso=+(ing||0),anosObjetivo=edadR-edad,edadFinPlan=edad+plazo;const rPPR=0.10/12;const retiroR=0.07/12;const retiroN=240;const capitalNecesario=des*(1-Math.pow(1+retiroR,-retiroN))/retiroR;function fvAport(mensual){let s=0,p=mensual;const totalMonths=anosObjetivo*12;const contribMonths=Math.min(plazo*12,totalMonths);for(let m=0;m<totalMonths;m++){if(m<contribMonths){if(m>0&&m%12===0)p*=1.04;s+=p}s*=1+rPPR}return s}function pmtFromCapital(cap){return cap*retiroR/(1-Math.pow(1+retiroR,-retiroN))}function pmtNeeded(fv){let lo=100,hi=100000,mid=0;for(let i=0;i<60;i++){mid=(lo+hi)/2;if(fvAport(mid)<fv)lo=mid;else hi=mid}return mid}const capitalActual=fvAport(ahorro);const ingresoProy=pmtFromCapital(capitalActual);const brecha=Math.max(0,des-ingresoProy);const aportMeta=pmtNeeded(capitalNecesario);let fd={};if(reg==='NOM'||reg==='PF'){const ia=ingreso*12;const lim=Math.min(ia*0.10,194140);const ded=Math.min(ahorro*12,lim);const isr=ingreso<20000?0.21:ingreso<50000?0.30:0.35;const dev=ded*isr;if(reg==='NOM'){fd={t:'NOM',ded,dev,isr:Math.round(isr*100),exento:capitalActual*0.85}}else{fd={t:'PF',ded,dev,isr:Math.round(isr*100)}}}else{fd={t:'INF',exento:capitalActual*0.85}}const dolor=getSelected('chipsDolor'),meta=getSelected('chipsMeta'),porque=getSelected('chipsPorque'),condicion=getSelected('chipsCondicion'),freno=getSelected('chipsFreno'),dolorPorque=($('dolorPorque').value||'').trim();const temp=calcularTemperatura(porque,condicion,freno);ST={nom,wa,des,edad,edadR,ahorro,reg,ingreso,plazo,edadFinPlan,anos:anosObjetivo,capitalActual,ingresoProy,brecha,capitalNecesario,aportMeta,fd,dolor,meta,porque,condicion,freno,dolorPorque,temperatura:temp.label,temperaturaRazon:temp.razon,fecha:new Date().toLocaleString('es-MX')};mostrar();enviarDiagnostico();$('calcOv').classList.remove('vis')},900)}
+function calcular(){const ahorro=parseMoney($('ahorro').value),reg=getReg(),ing=$('ingresoR').value,nom=$('nombre').value.trim(),wa=$('wanum').value.trim(),plazo=+$('plazo').value;const err=$('e2');if(!ahorro||ahorro<2000){err.textContent='Elige una aportación mensual. La mínima para calcular esta estrategia es de $2,000.';err.classList.add('vis');return}if(!plazo||![15,20,25].includes(plazo)){err.textContent='Elige durante cuánto tiempo te gustaría aportar: 15, 20 o 25 años.';err.classList.add('vis');return}const ok=nom&&/^(?:\d{10}|\+[1-9]\d{7,14})$/.test(wa)&&(reg==='INF'||ing);if(!ok){err.textContent='Completa tu régimen, ingreso aproximado, nombre y WhatsApp para ver tu diagnóstico.';err.classList.add('vis');return}err.classList.remove('vis');$('calcOv').classList.add('vis');setTimeout(()=>{const des=parseMoney($('deseo').value),edad=+$('edad').value,edadR=+$('edadRet').value,ingreso=+(ing||0),anosObjetivo=edadR-edad,edadFinPlan=edad+plazo;const rPPR=0.10/12;const retiroR=0.07/12;const retiroN=240;const capitalNecesario=des*(1-Math.pow(1+retiroR,-retiroN))/retiroR;function fvAport(mensual){let s=0,p=mensual;const totalMonths=anosObjetivo*12;const contribMonths=Math.min(plazo*12,totalMonths);for(let m=0;m<totalMonths;m++){if(m<contribMonths){if(m>0&&m%12===0)p*=1.04;s+=p}s*=1+rPPR}return s}function pmtFromCapital(cap){return cap*retiroR/(1-Math.pow(1+retiroR,-retiroN))}function pmtNeeded(fv){let lo=100,hi=100000,mid=0;for(let i=0;i<60;i++){mid=(lo+hi)/2;if(fvAport(mid)<fv)lo=mid;else hi=mid}return mid}const capitalActual=fvAport(ahorro);const ingresoProy=pmtFromCapital(capitalActual);const brecha=Math.max(0,des-ingresoProy);const aportMeta=pmtNeeded(capitalNecesario);let fd={};if(reg==='NOM'||reg==='PF'){const ia=ingreso*12;const lim=Math.min(ia*0.10,194140);const ded=Math.min(ahorro*12,lim);const isr=ingreso<20000?0.21:ingreso<50000?0.30:0.35;const dev=ded*isr;if(reg==='NOM'){fd={t:'NOM',ded,dev,isr:Math.round(isr*100),exento:capitalActual*0.85}}else{fd={t:'PF',ded,dev,isr:Math.round(isr*100)}}}else{fd={t:'INF',exento:capitalActual*0.85}}const dolor=getSelected('chipsDolor'),meta=getSelected('chipsMeta'),porque=getSelected('chipsPorque'),condicion=getSelected('chipsCondicion'),freno=getSelected('chipsFreno'),dolorPorque=($('dolorPorque').value||'').trim();const temp=calcularTemperatura(porque,condicion,freno);ST={nom,wa,des,edad,edadR,ahorro,reg,ingreso,plazo,edadFinPlan,anos:anosObjetivo,capitalActual,ingresoProy,brecha,capitalNecesario,aportMeta,fd,dolor,meta,porque,condicion,freno,dolorPorque,temperatura:temp.label,temperaturaRazon:temp.razon,fecha:new Date().toLocaleString('es-MX')};mostrar();enviarDiagnostico();$('calcOv').classList.remove('vis')},900)}
 function calcularTemperatura(porque,condicion,freno){
   const señales=[
     {val:'Estuve a punto de contratar un plan, pero no lo concreté',lista:freno,puntos:3,razon:'Ya estuvo a punto de contratar un plan antes.'},
@@ -231,7 +235,7 @@ function enviarDiagnostico(){
     }
   };
 
-  console.log('Enviando diagnóstico a EmailJS:', payload);
+  // No registrar identidad ni enlaces de acceso en consola.
 
   fetch('https://api.emailjs.com/api/v1.0/email/send', {
     method: 'POST',
@@ -251,6 +255,14 @@ function enviarDiagnostico(){
     alert('No se pudo enviar el correo automático. Revisa la consola del navegador.');
   });
 }
+</script>
+<script>
+// Identidad/persistencia alrededor del cálculo; las fórmulas financieras permanecen sin cambios.
+(function(){
+ const originalMostrar=mostrar, originalEmail=enviarDiagnostico;
+ mostrar=function(){originalMostrar();window.GarbaAccess.pending(ST)};
+ enviarDiagnostico=function(){return window.GarbaAccess.finish(ST,()=>originalEmail())};
+})();
 </script>
 </body>
 </html>
