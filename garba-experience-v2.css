@@ -1,0 +1,31 @@
+/* GarBa · Punto de Partida · Visual Experience V2. No changes to business rules or PDF. */
+:root{--navy:#102640;--navy2:#193b5c;--blue:#315c8c;--accent:#ad8750;--accent-soft:#fbf6ee;--soft:#f1f6fb;--ink:#102640;--text:#253e57;--muted:#64758a;--border:#e0e8f0;--radius:20px}
+html{scroll-behavior:smooth}
+body{background:radial-gradient(ellipse 65% 38% at 88% -12%,#dfe9f3,transparent 78%),linear-gradient(180deg,#fbfcfe,#f3f7fb 80%)}
+.topbar{box-shadow:0 8px 35px #1026400c}
+.brand-name{letter-spacing:-.035em}
+.brand-sub{letter-spacing:.04em}
+.hero{position:relative}
+.hero-eyebrow,.res-eyebrow{letter-spacing:.16em;text-transform:uppercase;color:#9a753f}
+.hero h1{letter-spacing:-.045em;line-height:1.1;text-wrap:balance}
+.hero-lead{line-height:1.7;max-width:680px}
+.photo-card{border-radius:24px;overflow:hidden;box-shadow:0 26px 70px #10264020}
+.card{border:1px solid var(--border);border-radius:22px;box-shadow:0 16px 48px #1026400d;background:#fff}
+.card-head{border-bottom:1px solid var(--border)}
+.step-num{transition:background .2s ease,transform .2s ease}
+.step-item.active .step-num{box-shadow:0 0 0 5px #315c8c18}
+.choice-btn,.reg-card{border-radius:16px;transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease;background:#fff}
+.choice-btn:hover,.reg-card:hover{transform:translateY(-2px);box-shadow:0 12px 32px #10264014}
+.choice-btn.sel,.reg-card.sel{border-color:#315c8c;box-shadow:inset 0 0 0 1px #315c8c;background:#edf4fa}
+.btn-primary,.btn-wa{border-radius:13px;min-height:48px;background:#143c63;box-shadow:0 10px 28px #10264020}
+.btn-outline{border-radius:13px;min-height:46px}
+.fi,.big-fi{border-radius:12px}
+.fi:focus,.big-fi:focus{outline:3px solid #a5c2e1;outline-offset:2px}
+.res-header{border-radius:22px}
+.metric{border-radius:16px}
+.metric-num{letter-spacing:-.045em;font-variant-numeric:tabular-nums}
+.insight,.fiscal-block,.advisor-card,.cta-box{border-radius:20px;box-shadow:0 12px 36px #1026400c}
+.faq-item{border-radius:14px}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #315c8c;outline-offset:3px}
+@media(max-width:760px){.wrap{padding-left:16px;padding-right:16px}.hero h1{font-size:clamp(30px,8vw,48px)}.card{border-radius:17px}.card-body{padding:clamp(16px,4vw,26px)}.choice-btn,.reg-card{min-height:52px}.metrics{gap:10px}.metric-num{font-size:clamp(24px,6vw,36px)}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.step-num,.choice-btn,.reg-card{transition:none}.choice-btn:hover,.reg-card:hover{transform:none}}
